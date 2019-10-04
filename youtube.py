@@ -5,50 +5,46 @@ from prettytable import PrettyTable
 import webbrowser
 from pytube import YouTube
 
-x = input("Enter the search : ")
+x = input("Enter the Song Name : ")
 
 name = x
 
-x = x.replace(' ','+')
+x = x.replace(' ', '+')
 
-t = PrettyTable(['No','Title'])
+t = PrettyTable(['No', 'Title'])
 
 url = 'https://www.youtube.com/results?search_query=' + x
 
 page = requests.get(url)
 
-soup = BeautifulSoup(page.content,'html.parser')
+soup = BeautifulSoup(page.content, 'html.parser')
 
-y = soup.findAll('h3',class_='yt-lockup-title ')
+y = soup.select(".yt-uix-tile-link")
 
-n=1
+n = 1
 for i in y:
-     t.add_row([n,i.a['title']])
-     n=n+1
+    t.add_row([n, i['title']])
+    n = n + 1
 
-print (t)
-ch = int(input("Enter no to Download : "))
+print(t)
 
-link = "https://www.youtube.com" + str(y[(int)(ch-1)].a['href'])
-#webbrowser.open_new(link)
+ch = int(input("Index number of the song to Download : "))
 
-#print(link)
+link = "https://www.youtube.com" + str(y[(int)(ch - 1)]['href'])
+
+# webbrowser.open_new(link)
+# print(link)
 
 ##################################
 
- 
 try:
-    #object creation using YouTube which was imported in the beginning
+    # object creation using YouTube which was imported in the beginning
     yt = YouTube(link)
 except:
     print("Connection Error")
- 
 
 try:
     yt.streams.filter(subtype='mp4').first().download()
+    print('Download Completed!')
 except:
     print("Aw, Snap! Something went wrong")
-print('Download Completed!')
-
-
-
